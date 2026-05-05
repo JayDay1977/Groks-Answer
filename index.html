@@ -66,13 +66,21 @@
     </div>
   </div>
 
-  <!-- SCREEN 3 -->
+ <!-- SCREEN 3: Scanner -->
   <div class="screen" id="screen3">
-    <div style="background:var(--bg-header);padding:15px;text-align:center;">
+    <div style="background:var(--bg-header);padding:15px;display:flex;justify-content:space-between;align-items:center;">
       <h2>Scan QR Code</h2>
+      <button onclick="handleBack()" style="padding:8px 16px;background:transparent;border:1px solid var(--border);color:var(--text-sec);border-radius:8px;">Back</button>
     </div>
-    <div style="flex:1;padding:16px;">
-      <p>Scanner ready (full camera code can be added next)</p>
+    <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;">
+      <div id="camWrap" style="background:#000;border-radius:12px;overflow:hidden;position:relative;height:280px;">
+        <video id="camVideo" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;"></video>
+      </div>
+      <input id="txtRD" readonly placeholder="Scanned code appears here..." style="padding:12px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-pri);">
+      <textarea id="txtStatus" readonly rows="3" style="padding:12px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-pri);"></textarea>
+      
+      <button onclick="handleSubmit()" style="padding:16px;background:var(--accent);color:white;border:none;border-radius:12px;font-weight:bold;">Submit Check-In</button>
+      <button onclick="handleScanAgain()" style="padding:14px;background:transparent;border:2px solid var(--border);color:var(--text-sec);border-radius:12px;">Scan Again</button>
     </div>
   </div>
 </div>
