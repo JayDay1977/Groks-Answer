@@ -7,9 +7,6 @@
   <style>
     :root {
       --bg-deep: #0a1520;
-      --bg-card: #0f1e2d;
-      --bg-input: #0d1a27;
-      --bg-header: #0c1825;
       --accent: #0db87a;
       --text-pri: #d8edf5;
       --text-sec: #5a8098;
@@ -17,11 +14,11 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; background: var(--bg-deep); color: var(--text-pri); font-family: system-ui, sans-serif; overflow: hidden; }
     #app { max-width: 480px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; }
-    .screen { display: none; flex-direction: column; flex: 1; }
+    .screen { display: none; flex: 1; flex-direction: column; }
     .screen.active { display: flex; }
     .google-btn {
       display: flex; align-items: center; justify-content: center; gap: 12px;
-      width: 100%; max-width: 320px; margin: 20px auto; padding: 16px 24px;
+      width: 100%; max-width: 320px; margin: 40px auto; padding: 16px 24px;
       background: white; color: black; border: none; border-radius: 14px;
       font-size: 16px; font-weight: 600; cursor: pointer;
     }
@@ -32,7 +29,7 @@
 
   <!-- SCREEN 1 -->
   <div class="screen active" id="screen1">
-    <div style="text-align:center;padding-top:80px;">
+    <div style="text-align:center; padding-top:100px;">
       <div style="font-size:80px;margin-bottom:20px;">📷</div>
       <h1 style="font-size:28px;">Check In Scanner</h1>
       <p style="color:var(--text-sec);">CVSOA Event System</p>
@@ -42,37 +39,30 @@
     </button>
   </div>
 
-  <!-- SCREEN 2 - Setup -->
+  <!-- SCREEN 2 -->
   <div class="screen" id="screen2">
-    <div style="background:#0c1825;padding:20px;">
+    <div style="padding:20px;background:#0c1825;">
       <h2>Setup</h2>
-      <div id="userEmail" style="margin-top:8px;color:var(--text-sec);"></div>
+      <p id="userEmail" style="color:var(--text-sec);margin-top:8px;"></p>
     </div>
-    <div style="flex:1;padding:20px;display:flex;flex-direction:column;gap:16px;">
-      <div>
-        <label>Select Google Sheet</label>
-        <select id="dd1" onchange="onDD1Change()" style="width:100%;padding:12px;margin-top:5px;"></select>
-      </div>
-      <button onclick="goToScreen3()" style="margin-top:30px;padding:16px;background:var(--accent);color:white;border:none;border-radius:12px;font-weight:bold;" id="continueBtn" disabled>Continue to Scanner</button>
+    <div style="flex:1;padding:20px;">
+      <p>Screen 2 - Setup would go here</p>
+      <button onclick="goToScreen3()" style="margin-top:30px;padding:16px;background:var(--accent);color:white;border:none;border-radius:12px;width:100%;">Continue to Scanner</button>
     </div>
   </div>
 
-  <!-- SCREEN 3 - Scanner -->
+  <!-- SCREEN 3 -->
   <div class="screen" id="screen3">
-    <div style="background:#0c1825;padding:15px;text-align:center;">
-      <h2>Scan QR Code</h2>
-    </div>
-    <div style="flex:1;padding:16px;">
-      <video id="camVideo" autoplay playsinline muted style="width:100%;background:black;border-radius:12px;"></video>
-      <button onclick="handleScanAgain()" style="margin-top:20px;width:100%;padding:14px;background:transparent;border:2px solid #555;color:white;border-radius:12px;">Scan Again</button>
+    <div style="padding:20px;background:#0c1825;text-align:center;">
+      <h2>Scanner Screen</h2>
+      <p>Camera + QR Scanner would be here</p>
     </div>
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js"></script>
 <script>
 // =============================================
-// CONFIG
+// IMPROVED LOGIN FLOW
 // =============================================
 const CLIENT_ID = '300280942320-agk2l30ncges57mp68m0unvnfng6gsg1.apps.googleusercontent.com';
 
@@ -82,37 +72,30 @@ function handleGoogleLogin() {
   window.location.href = url;
 }
 
-// Process token after redirect
-function processToken() {
-  if (window.location.hash.includes('access_token')) {
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    const token = params.get('access_token');
-    if (token) {
-      console.log("✅ Login Successful!");
-      // Move to Screen 2
-      document.getElementById('screen1').classList.remove('active');
-      document.getElementById('screen2').classList.add('active');
-      document.getElementById('userEmail').textContent = "Logged in successfully";
-    }
+// Check for token after Google redirects back
+function checkForToken() {
+  if (window.location.hash && window.location.hash.includes('access_token')) {
+    console.log("✅ Token received from Google!");
+    
+    // Move from Screen 1 to Screen 2
+    document.getElementById('screen1').classList.remove('active');
+    document.getElementById('screen2').classList.add('active');
+    
+    // Optional: clean the URL
+    history.replaceState(null, '', window.location.pathname);
   }
 }
 
-// Run on load
-window.onload = processToken;
+// Run when page loads
+window.onload = checkForToken;
 
-function onDD1Change() {
-  document.getElementById('continueBtn').disabled = false;
-}
+// Also check if user refreshes the page while having a token
+checkForToken();
+
 function goToScreen3() {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen2').classList.remove('active');
   document.getElementById('screen3').classList.add('active');
 }
-function handleScanAgain() {
-  alert("Camera would start here in full version");
-}
-
-console.log("✅ CVSOA Scanner Loaded");
 </script>
 </body>
 </html>
