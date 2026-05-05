@@ -11,109 +11,60 @@
       --bg-input: #0d1a27;
       --bg-header: #0c1825;
       --accent: #0db87a;
-      --accent-dim: #0a8a5c;
-      --accent-glow: rgba(13,184,122,0.25);
-      --red: #e04444;
-      --border: #1a2f42;
       --text-pri: #d8edf5;
       --text-sec: #5a8098;
-      --text-dim: #2a4858;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body {
-      width: 100%; height: 100%;
-      background: var(--bg-deep);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      color: var(--text-pri);
-      overflow: hidden;
-    }
-    #app {
-      width: 100%; height: 100%;
-      max-width: 480px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-    }
-    .screen { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; background: var(--bg-deep); color: var(--text-pri); font-family: system-ui, sans-serif; overflow: hidden; }
+    #app { max-width: 480px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; }
+    .screen { display: none; flex-direction: column; flex: 1; }
     .screen.active { display: flex; }
-
-    #toast {
-      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
-      background: #1a2f42; border: 1px solid #22405a; border-radius: 12px;
-      padding: 12px 20px; font-size: 14px; z-index: 999; transition: all 0.3s;
-      white-space: nowrap; pointer-events: none;
-    }
-    #toast.show { transform: translateX(-50%) translateY(0); }
-
     .google-btn {
       display: flex; align-items: center; justify-content: center; gap: 12px;
-      width: 100%; padding: 15px 24px; background: #ffffff; border: none; border-radius: 14px;
-      font-size: 15px; font-weight: 600; color: #1f1f1f; cursor: pointer;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+      width: 100%; max-width: 320px; margin: 20px auto; padding: 16px 24px;
+      background: white; color: black; border: none; border-radius: 14px;
+      font-size: 16px; font-weight: 600; cursor: pointer;
     }
   </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- SCREEN 1: Login -->
+  <!-- SCREEN 1 -->
   <div class="screen active" id="screen1">
-    <div style="text-align:center; padding: 60px 20px 40px;">
-      <div style="width:88px;height:88px;background:#0db87a;border-radius:24px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:48px;">📷</div>
-      <h1 style="font-size:28px;margin-bottom:8px;">Check In Scanner</h1>
-      <p style="color:#5a8098;">CVSOA Event System</p>
+    <div style="text-align:center;padding-top:80px;">
+      <div style="font-size:80px;margin-bottom:20px;">📷</div>
+      <h1 style="font-size:28px;">Check In Scanner</h1>
+      <p style="color:var(--text-sec);">CVSOA Event System</p>
     </div>
     <button class="google-btn" onclick="handleGoogleLogin()">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24" height="24">
-        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.56 2.89-2.2 5.35-4.64 6.98l7.4 5.76c4.34-4 6.84-9.9 6.84-17.21z"/>
-        <path fill="#FBBC05" d="M10.53 28.59c-.98-2.89-.98-6.01 0-8.9L2.55 13.4c-3.4 6.78-3.4 14.82 0 21.6l7.98-6.19z"/>
-        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.4-5.76c-2.04 1.37-4.66 2.18-8.49 2.18-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-      </svg>
       Sign in with Google
     </button>
   </div>
 
-  <!-- SCREEN 2: Setup -->
+  <!-- SCREEN 2 - Setup -->
   <div class="screen" id="screen2">
-    <div style="background:var(--bg-header);padding:20px;">
+    <div style="background:#0c1825;padding:20px;">
       <h2>Setup</h2>
-      <div id="userInfo" style="margin-top:8px;"></div>
+      <div id="userEmail" style="margin-top:8px;color:var(--text-sec);"></div>
     </div>
-    <div style="flex:1;padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;">
+    <div style="flex:1;padding:20px;display:flex;flex-direction:column;gap:16px;">
       <div>
-        <label style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-sec);">Select Google Sheet</label>
-        <select id="dd1" onchange="onDD1Change()" style="width:100%;padding:12px;margin-top:4px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-pri);"></select>
+        <label>Select Google Sheet</label>
+        <select id="dd1" onchange="onDD1Change()" style="width:100%;padding:12px;margin-top:5px;"></select>
       </div>
-      <div>
-        <label style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-sec);">Approval Column ("Yes")</label>
-        <select id="dd2" onchange="checkContinueReady()" style="width:100%;padding:12px;margin-top:4px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-pri);"></select>
-      </div>
-      <div>
-        <label style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-sec);">Check-In Column ("X")</label>
-        <select id="dd3" onchange="checkContinueReady()" style="width:100%;padding:12px;margin-top:4px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-pri);"></select>
-      </div>
-      <button id="btnContinue" onclick="goToScreen3()" style="margin-top:20px;padding:16px;background:var(--accent);color:white;border:none;border-radius:12px;font-weight:bold;" disabled>Continue to Scanner</button>
+      <button onclick="goToScreen3()" style="margin-top:30px;padding:16px;background:var(--accent);color:white;border:none;border-radius:12px;font-weight:bold;" id="continueBtn" disabled>Continue to Scanner</button>
     </div>
   </div>
 
-  <!-- SCREEN 3: Scanner -->
+  <!-- SCREEN 3 - Scanner -->
   <div class="screen" id="screen3">
-    <div style="background:var(--bg-header);padding:15px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="background:#0c1825;padding:15px;text-align:center;">
       <h2>Scan QR Code</h2>
-      <button onclick="handleBack()" style="padding:8px 16px;background:transparent;border:1px solid var(--border);color:var(--text-sec);border-radius:8px;">Back</button>
     </div>
-    <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;">
-      <div id="camWrap" style="background:#000;border-radius:12px;overflow:hidden;position:relative;height:280px;">
-        <video id="camVideo" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;"></video>
-      </div>
-      <input id="txtRD" readonly placeholder="Scanned code appears here..." style="padding:12px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-pri);">
-      <textarea id="txtStatus" readonly rows="3" style="padding:12px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-pri);"></textarea>
-      
-      <button onclick="handleSubmit()" style="padding:16px;background:var(--accent);color:white;border:none;border-radius:12px;font-weight:bold;">Submit Check-In</button>
-      <button onclick="handleScanAgain()" style="padding:14px;background:transparent;border:2px solid var(--border);color:var(--text-sec);border-radius:12px;">Scan Again</button>
+    <div style="flex:1;padding:16px;">
+      <video id="camVideo" autoplay playsinline muted style="width:100%;background:black;border-radius:12px;"></video>
+      <button onclick="handleScanAgain()" style="margin-top:20px;width:100%;padding:14px;background:transparent;border:2px solid #555;color:white;border-radius:12px;">Scan Again</button>
     </div>
   </div>
 </div>
@@ -131,23 +82,37 @@ function handleGoogleLogin() {
   window.location.href = url;
 }
 
-// Basic placeholders for Screen 2 & 3
-function onDD1Change() { console.log("Sheet selected"); }
-function checkContinueReady() {
-  document.getElementById('btnContinue').disabled = false;
+// Process token after redirect
+function processToken() {
+  if (window.location.hash.includes('access_token')) {
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const token = params.get('access_token');
+    if (token) {
+      console.log("✅ Login Successful!");
+      // Move to Screen 2
+      document.getElementById('screen1').classList.remove('active');
+      document.getElementById('screen2').classList.add('active');
+      document.getElementById('userEmail').textContent = "Logged in successfully";
+    }
+  }
+}
+
+// Run on load
+window.onload = processToken;
+
+function onDD1Change() {
+  document.getElementById('continueBtn').disabled = false;
 }
 function goToScreen3() {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen3').classList.add('active');
 }
-function handleBack() {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen2').classList.add('active');
+function handleScanAgain() {
+  alert("Camera would start here in full version");
 }
-function handleSubmit() { alert("Check-in submitted successfully!"); }
-function handleScanAgain() { alert("Ready to scan again"); }
 
-console.log("✅ CVSOA Scanner Loaded - Full Version");
+console.log("✅ CVSOA Scanner Loaded");
 </script>
 </body>
 </html>
