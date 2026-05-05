@@ -39,12 +39,6 @@
       <p style="color:var(--text-sec);">CVSOA Event System</p>
     </div>
     <button class="google-btn" onclick="handleGoogleLogin()">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24" height="24">
-        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.56 2.89-2.2 5.35-4.64 6.98l7.4 5.76c4.34-4 6.84-9.9 6.84-17.21z"/>
-        <path fill="#FBBC05" d="M10.53 28.59c-.98-2.89-.98-6.01 0-8.9L2.55 13.4c-3.4 6.78-3.4 14.82 0 21.6l7.98-6.19z"/>
-        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.4-5.76c-2.04 1.37-4.66 2.18-8.49 2.18-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-      </svg>
       Sign in with Google
     </button>
   </div>
@@ -78,7 +72,7 @@
       <h2>Scan QR Code</h2>
     </div>
     <div style="flex:1;padding:16px;">
-      <p>Scanner screen ready (camera code can be added later)</p>
+      <p>Scanner ready (full camera code can be added next)</p>
     </div>
   </div>
 </div>
@@ -89,7 +83,6 @@
 // CONFIG
 // =============================================
 const CLIENT_ID = '300280942320-agk2l30ncges57mp68m0unvnfng6gsg1.apps.googleusercontent.com';
-
 let accessToken = null;
 
 function handleGoogleLogin() {
@@ -118,10 +111,9 @@ function showScreen(n) {
 }
 
 async function loadSheets() {
-  document.getElementById('userEmail').textContent = "Loading your sheets...";
   try {
     const res = await fetch("https://www.googleapis.com/drive/v3/files?q=mimeType='application/vnd.google-apps.spreadsheet' and trashed=false&fields=files(id,name)&orderBy=name", {
-      headers: { Authorization: 'Bearer ' + accessToken }
+      headers: { Authorization: `Bearer ${accessToken}` }
     });
     const data = await res.json();
     const dd1 = document.getElementById('dd1');
@@ -133,18 +125,43 @@ async function loadSheets() {
       dd1.appendChild(opt);
     });
   } catch (e) {
-    document.getElementById('userEmail').textContent = "Error loading sheets";
     console.error(e);
   }
 }
 
-function onDD1Change() { checkContinueReady(); }
+async function onDD1Change() {
+  const sheetId = document.getElementById('dd1').value;
+  if (!sheetId) return;
+
+  try {
+    const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/1:1`, {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    const data = await res.json();
+    const headers = data.values ? data.values[0] : [];
+
+    const dd2 = document.getElementById('dd2');
+    const dd3 = document.getElementById('dd3');
+    dd2.innerHTML = '<option value="">-- Select Approval Column --</option>';
+    dd3.innerHTML = '<option value="">-- Select Check-In Column --</option>';
+
+    headers.forEach((header, index) => {
+      const label = `${String.fromCharCode(65 + index)}: ${header}`;
+      dd2.innerHTML += `<option value="${index}">${label}</option>`;
+      dd3.innerHTML += `<option value="${index}">${label}</option>`;
+    });
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 function checkContinueReady() {
   const dd1 = document.getElementById('dd1').value;
   const dd2 = document.getElementById('dd2').value;
   const dd3 = document.getElementById('dd3').value;
   document.getElementById('btnContinue').disabled = !(dd1 && dd2 && dd3);
 }
+
 function goToScreen3() {
   showScreen(3);
 }
